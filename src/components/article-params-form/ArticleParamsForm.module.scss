@@ -8,6 +8,14 @@
 	transition: transform 0.5s ease;
 }
 
+.spacing {
+	margin-bottom: 50px;
+}
+
+.spacing:last-child {
+	margin-bottom: 0;
+}
+
 .container_open {
 	transform: translate(0);
 }
