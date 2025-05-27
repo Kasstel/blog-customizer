@@ -17,18 +17,17 @@ import clsx from 'clsx';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 type ArticleParamsFormProps = {
 	isOpen: boolean;
 	onToggle: () => void;
-	onApply: () => void;
-	onReset: () => void;
-	formState: typeof defaultArticleState;
-	setFormState: (state: typeof defaultArticleState) => void;
+	setAppliedState: (state: typeof defaultArticleState) => void;
 };
 
 export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
+	const [formState, setFormState] = useState(defaultArticleState);
+
 	const ref = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -44,21 +43,22 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 
 	const handleOptionChange =
 		(field: keyof ArticleStateType) => (selectedOption: OptionType) => {
-			props.setFormState({
-				...props.formState,
+			setFormState({
+				...formState,
 				[field]: selectedOption,
 			});
 		};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		props.onApply();
 		props.onToggle();
+		props.setAppliedState(formState);
 	};
 
 	const handleReset = () => {
-		props.onReset();
 		props.onToggle();
+		setFormState(defaultArticleState);
+		props.setAppliedState(defaultArticleState);
 	};
 
 	return (
@@ -82,7 +82,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<Select
 							title='Шрифт'
 							options={fontFamilyOptions}
-							selected={props.formState.fontFamilyOption}
+							selected={formState.fontFamilyOption}
 							onChange={handleOptionChange('fontFamilyOption')}
 						/>
 					</div>
@@ -90,7 +90,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<RadioGroup
 							title='Размер шрифта'
 							options={fontSizeOptions}
-							selected={props.formState.fontSizeOption}
+							selected={formState.fontSizeOption}
 							name='Размер шрифта'
 							onChange={handleOptionChange('fontSizeOption')}
 						/>
@@ -99,7 +99,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<Select
 							title='Цвет шрифта'
 							options={fontColors}
-							selected={props.formState.fontColor}
+							selected={formState.fontColor}
 							onChange={handleOptionChange('fontColor')}
 						/>
 					</div>
@@ -110,7 +110,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<Select
 							title='Цвет фона'
 							options={backgroundColors}
-							selected={props.formState.backgroundColor}
+							selected={formState.backgroundColor}
 							onChange={handleOptionChange('backgroundColor')}
 						/>
 					</div>
@@ -118,7 +118,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						<Select
 							title='Ширина контента'
 							options={contentWidthArr}
-							selected={props.formState.contentWidth}
+							selected={formState.contentWidth}
 							onChange={handleOptionChange('contentWidth')}
 						/>
 					</div>
